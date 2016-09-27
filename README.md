@@ -1,0 +1,2 @@
+# ellipsis.js
+Ellipsis Everywhere
