@@ -53,6 +53,7 @@ Configuration properties:
 	  responsive: true, //if you want the ellipsis to move with the window resizing
 	  class: '.clamp', //default class to apply the ellipsis
 	  lines: 2 //default number of lines when the ellipsis will appear
+	  portrait: null //default no change, put a number of lines if you want a different number of lines in portrait mode
     }
 
 ----------
