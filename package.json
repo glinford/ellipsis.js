@@ -1,0 +1,27 @@
+{
+  "name": "ellipsis.js",
+  "version": "0.0.1",
+  "description": "Ellipsis.js - Pure Javascript Library to handle multilines ellipsis",
+  "main": "ellipsis.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glinford/ellipsis.js.git"
+  },
+  "keywords": [
+    "ellipsis",
+    "js",
+    "multiline",
+    "clamp",
+    "complex",
+    "css"
+  ],
+  "author": "glinford",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/glinford/ellipsis.js/issues"
+  },
+  "homepage": "https://github.com/glinford/ellipsis.js#readme"
+}
