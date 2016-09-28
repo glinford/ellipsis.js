@@ -44,6 +44,12 @@
   span {
     font-style: oblique;
   }
+  .normal{
+    line-height: normal;
+    font-size: 10px;
+    width: 30vw;
+    margin-left:10vw;
+  }
   </style>
 </head>
 
@@ -67,19 +73,31 @@
       Vivamus sed arcu mi. <a href="#">Nam semper cursus</a> augue nec pulvinar. <b>Integer ac justo laoreet</a>, condimentum nunc non, luctus mi.
 		</article>
 
+    <h2 class="title">Block with 'normal' line-height property</h2>
+		<article class="normal">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh.
+      Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum.
+      Vivamus sed arcu mi. Nam semper cursus augue nec pulvinar.
+    </article>
+
 	</section>
 
 	<footer>
 		<p>Build by <a href="https://github.com/glinford/ellipsis.js">@glinford</a></p>
-    <script src="ellipsis.js"></script>
+    <script src="ellipsis.min.js"></script>
     <script type="text/javascript">
 
-      new Ellipsis({
+      Ellipsis({
         class: '.title',
         lines: 1
       }); //specific conf on titles
 
-      new Ellipsis({}); //default conf on articles
+      Ellipsis({
+        class: '.normal',
+        lines: 3
+      });
+
+      Ellipsis(); //default conf with .clamp
     </script>
 	</footer>
 

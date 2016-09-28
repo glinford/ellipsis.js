@@ -66,7 +66,11 @@ Ellipsis.prototype = {
           return parseInt(getComputedStyle(elements[n]).getPropertyValue("height"), 10);
         },
         get lineheight(){
-          return parseInt(getComputedStyle(elements[n]).getPropertyValue("line-height"), 10);
+          var lineh = getComputedStyle(elements[n]).getPropertyValue("line-height");
+          if(String('normal|initial|inherit').indexOf(lineh) > -1){ //very specific case
+            lineh = parseInt(getComputedStyle(elements[n]).getPropertyValue("font-size"), 10) + 2;
+          }
+          return parseInt(lineh, 10);
         }
       };
 
@@ -147,15 +151,6 @@ Ellipsis.prototype = {
 
 var EllipsisClass = function(opts){
   return new Ellipsis(opts);
-}
-
-if (typeof exports != 'undefined') {
-  if (typeof module != 'undefined' && module.exports) {
-    exports = module.exports = EllipsisClass;
-  }
-  exports.Ellipsis = EllipsisClass;
-} else if(typeof module != 'undefined'){
-  module.Ellipsis = EllipsisClass;
 }
 
 self.Ellipsis = EllipsisClass;
