@@ -7,7 +7,8 @@ var defaultConf = {
   debounce: 100,
   responsive: true,
   class: '.clamp',
-  lines: 2
+  lines: 2,
+  portrait: null
 };
 
 var merge = function(obj1, obj2){
@@ -25,6 +26,7 @@ function Ellipsis(opts) {
 Ellipsis.prototype = {
   conf: {},
   prop: {},
+  lines: {},
   temp: null,
   cloneCache: function(nodelist){
     var arr = [];
@@ -35,6 +37,15 @@ Ellipsis.prototype = {
   },
   create: function(opts){
     this.conf = opts;
+    this.lines = {
+      get current(){
+        if(opts.portrait && window.innerHeight > window.innerWidth){
+          return opts.portrait;
+        }
+        return opts.lines;
+      }
+    };
+
     if(this.conf.responsive){
       this.temp = this.cloneCache(document.querySelectorAll(this.conf.class));
       var debounce;
@@ -48,7 +59,7 @@ Ellipsis.prototype = {
       window.addEventListener('resize', listener.bind(this), false);
       window.removeEventListener('beforeunload', listener.bind(this), false);
     }
-    this.add(this.conf.lines, this.conf.class);
+    this.add();
   },
   add: function(){
     var elements = document.querySelectorAll(this.conf.class);
@@ -74,7 +85,7 @@ Ellipsis.prototype = {
         }
       };
 
-      if(this.prop.height > this.prop.lineheight * this.conf.lines){
+      if(this.prop.height > this.prop.lineheight * this.lines.current){
         if(elements[n].childNodes.length && elements[n].childNodes.length > 1){
           this.handleChilds(elements[n]);
         } else if(elements[n].childNodes.length && elements[n].childNodes.length === 1 && elements[n].childNodes[0].nodeType === 3){
@@ -86,12 +97,12 @@ Ellipsis.prototype = {
   },
   simpleText: function(element){
     var childText = element.childNodes[0].nodeValue;
-    while(this.prop.height > (this.prop.lineheight * this.conf.lines)){
+    while(this.prop.height > (this.prop.lineheight * this.lines.current)){
       element.childNodes[0].nodeValue = childText.slice(0, -1);
       childText = element.childNodes[0].nodeValue;
     }
     element.childNodes[0].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
-    if(this.prop.height > this.prop.lineheight * this.conf.lines){ //edge case
+    if(this.prop.height > this.prop.lineheight * this.lines.current){ //edge case
       element.childNodes[0].nodeValue = ' ' + element.childNodes[0].nodeValue.slice(0, -(this.conf.ellipsis.length + 1)).trim().slice(0, -(this.conf.ellipsis.length)) + '...';
     }
   },
@@ -107,16 +118,16 @@ Ellipsis.prototype = {
         domChilds[i].style.display = 'none';
       }
 
-      if(this.prop.height <= this.prop.lineheight * this.conf.lines){
+      if(this.prop.height <= this.prop.lineheight * this.lines.current){
         if(domChilds[i].nodeType === 3){
           domChilds[i].nodeValue = displayOrigin;
           var childText = domChilds[i].nodeValue;
-          while(this.prop.height > (this.prop.lineheight * this.conf.lines)){
+          while(this.prop.height > (this.prop.lineheight * this.lines.current)){
             domChilds[i].nodeValue = childText.slice(0, -1);
             childText = domChilds[i].nodeValue;
           }
           domChilds[i].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
-          if(this.prop.height > this.prop.lineheight * this.conf.lines){ //edge case
+          if(this.prop.height > this.prop.lineheight * this.lines.current){ //edge case
             domChilds[i].nodeValue = ' ' + domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
             if(domChilds[i].nodeValue.length > 1){
                domChilds[i].nodeValue = domChilds[i].nodeValue + this.conf.ellipsis;
@@ -127,12 +138,12 @@ Ellipsis.prototype = {
         } else {
           domChilds[i].style.display = displayOrigin;
           var childText = domChilds[i].innerHTML;
-          while(this.prop.height > (this.prop.lineheight * this.conf.lines)){
+          while(this.prop.height > (this.prop.lineheight * this.lines.current)){
             domChilds[i].innerHTML = childText.slice(0, -1);
             childText = domChilds[i].innerHTML;
           }
           domChilds[i].innerHTML = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
-          if(this.prop.height > this.prop.lineheight * this.conf.lines){ //edge case
+          if(this.prop.height > this.prop.lineheight * this.lines.current){ //edge case
             domChilds[i].innerHTML = ' ' + domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
             if(domChilds[i].innerHTML.length > 1){
               domChilds[i].innerHTML = domChilds[i].innerHTML + this.conf.ellipsis;
