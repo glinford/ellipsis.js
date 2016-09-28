@@ -60,7 +60,7 @@ Configuration properties:
 Known Issues:
 -------------------
 
-By default the line-height property of a text is 'normal' which cannot be computed with getComputedStyle() method. If that occurs we will replace the line-height from normal to 1.3em which is the default value for most of browsers/OS.
+By default the line-height property of a text is 'normal' which cannot be computed with getComputedStyle() method. If that occurs we will replace the line-height from normal to font-size + 2px which is the default value for most of browsers/OS.
 
 ----------
 
