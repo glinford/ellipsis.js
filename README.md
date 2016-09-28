@@ -1,9 +1,9 @@
 Ellipsis.js
 ===================
 
-Ellipsis.js is a Pure Javascript Library to add some ellipsis on some complex DOM elements such as multiline div elements with childs.
-The library is fully responsive and across all browsers, and try to be highly configurable.
-It is only very light, with a size of  3.25kb when minified. 
+Ellipsis.js is a Pure Javascript Library to add some ellipsis on some complex DOM elements such as multiline divs or elements with childs (links, spans, etc..).
+The library is fully responsive, works across all major browsers, and try to be highly configurable.
+It is also very light, with a size of  3.25kb when minified. 
 
 ----------
 
