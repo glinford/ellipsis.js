@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/glinford/ellipsis.js/issues"
   },
-  "homepage": "https://github.com/glinford/ellipsis.js#readme"
+  "homepage": "https://github.com/glinford/ellipsis.js#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-uglify": "^2.0.0"
+  }
 }
