@@ -1,19 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Ellipsis.js - Pure Javascript Library to handle multilines ellipsis</title>
+  <style>
+  body {
+    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+  }
+  section {
+    margin-left: 25vw;
+  }
+  article {
+    width: 50vw;
+    margin-bottom:30px;
+  }
+  .title{
+    font-size: 18px;
+    font-weight: 500;
+	  line-height: 20px;
+  }
+  header .title{
+    font-size: 22px;
+    font-weight: 600;
+	  line-height: 24px;
+  }
+  header {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    width:100vw;
+    text-align:center;
+  }
+  footer {
+    float:right;
+    margin-right:5vw;
+  }
+  span {
+    font-style: oblique;
+  }
+  </style>
 </head>
+
 <body>
+  <header>
+    <h1 class="title">Ellipsis.js - Pure Javascript Library to handle multilines ellipsis</h1>
+  </header>
+	<section>
+    <h2 class="title">Simple Text Block</h2>
+		<article class="clamp article-only-text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh.
+      Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum.
+      Vivamus sed arcu mi. Nam semper cursus augue nec pulvinar. Integer ac justo laoreet, condimentum nunc non, luctus mi.
+		</article>
 
-<div class="clamp only-2-line" style="margin-left:25vw;width:25vw;line-height:1em;">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh. Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum. Vivamus sed arcu mi. Nam semper cursus augue nec pulvinar. Integer ac justo laoreet, condimentum nunc non, luctus mi.
-</div>
+    <h2 class="title">Complex Text Block (with a, span and b elements)</h2>
+		<article class="clamp article-text-and-childs">
+      Lorem <b>ipsum</b> dolor sit amet, <a href="#">consectetur adipiscing elit</a>. Vivamus laoreet <span>ullamcorper</span> pharetra.
+      Fusce <b>facilisis</b> odio eu <a href="#">leo</a> laoreet aliquet vitae <a href="#">vitae nibh.</a> Duis quis quam vestibulum,
+      <span>faucibus eros sed, gravida odio.</span> Mauris sed tincidunt eros. <a href="#">Nunc varius quis enim quis</a> dictum.
+      Vivamus sed arcu mi. <a href="#">Nam semper cursus</a> augue nec pulvinar. <b>Integer ac justo laoreet</a>, condimentum nunc non, luctus mi.
+		</article>
 
-<br><br>
+	</section>
 
-<div class="clamp only-2-line-with-childs" style="margin-left:25vw;width:25vw;line-height:1em;">
-Lorem ipsum dolor sit amet, <a href="#">consectetur adipiscing elit</a>. Vivamus laoreet <span>ullamcorper</span> pharetra. Fusce facilisis odio eu <a href="#">leo</a> laoreet aliquet vitae <a href="#">vitae nibh.</a> Duis quis quam vestibulum, <span>faucibus eros sed, gravida odio.</span> Mauris sed tincidunt eros. Nunc varius quis enim quis dictum. Vivamus sed arcu mi. Nam semper cursus augue nec pulvinar. Integer ac justo laoreet, condimentum nunc non, luctus mi.
-</div>
+	<footer>
+		<p>Build by <a href="https://github.com/glinford/ellipsis.js">@glinford</a></p>
+    <script src="ellipsis.js"></script>
+    <script type="text/javascript">
 
-<script src="ellipsis.js"/>
-<script>
-  Ellipsis.create({});
-</script>
+      new Ellipsis({
+        class: '.title',
+        lines: 1
+      }); //specific conf on titles
+
+      new Ellipsis({}); //default conf on articles
+    </script>
+	</footer>
+
 </body>
+
+</html>

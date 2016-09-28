@@ -2,14 +2,29 @@
 
 'use strict';
 
-var Ellipsis = {
-  conf: {
-    ellipsis: '...',
-    debounce: 200,
-    responsive: true,
-    class: '.clamp',
-    lines: 2
-  },
+var defaultConf = {
+  ellipsis: '...',
+  debounce: 100,
+  responsive: true,
+  class: '.clamp',
+  lines: 2
+};
+
+var merge = function(obj1, obj2){
+  var obj3 = {};
+  for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+  for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+  return obj3;
+};
+
+function Ellipsis(opts) {
+  var conf = merge(defaultConf, opts || {});
+  this.create(conf);
+}
+
+Ellipsis.prototype = {
+  conf: {},
+  prop: {},
   temp: null,
   cloneCache: function(nodelist){
     var arr = [];
@@ -19,27 +34,34 @@ var Ellipsis = {
     return arr;
   },
   create: function(opts){
-    this.conf = Object.assign(this.conf, opts || {});
-    console.log(this.conf);
-    this.temp = this.cloneCache(document.querySelectorAll(this.conf.class));
+    this.conf = opts;
+    if(this.conf.responsive){
+      this.temp = this.cloneCache(document.querySelectorAll(this.conf.class));
+      var debounce;
+      var listener = function(event) {
+        clearTimeout(debounce);
+        debounce = setTimeout(function(){
+          this.add();
+        }.bind(this), this.conf.debounce);
+      };
+
+      window.addEventListener('resize', listener.bind(this), false);
+      window.removeEventListener('beforeunload', listener.bind(this), false);
+    }
     this.add(this.conf.lines, this.conf.class);
-    var debounce;
-    window.onresize = function(event) {
-      clearTimeout(debounce);
-      debounce = setTimeout(function(){
-        this.add(this.conf.lines, this.conf.class);
-      }.bind(this), this.conf.debounce);
-    }.bind(this);
   },
-  add: function(nbLine, qSelector){
-    var elements = document.querySelectorAll(qSelector);
+  add: function(){
+    var elements = document.querySelectorAll(this.conf.class);
     for(var n = 0; n < elements.length; n++){
-      // insert cached element for Resizing
-      if(this.temp && this.temp[n] != elements[n].innerHTML){
-        elements[n].innerHTML = this.temp[n];
+
+      if(this.conf.responsive){
+        // insert cached element for Resizing
+        if(this.temp && this.temp[n] != elements[n].innerHTML){
+          elements[n].innerHTML = this.temp[n];
+        }
       }
 
-      var prop = {
+      this.prop = {
         get height(){
           return parseInt(getComputedStyle(elements[n]).getPropertyValue("height"), 10);
         },
@@ -48,21 +70,28 @@ var Ellipsis = {
         }
       };
 
-      if(prop.height > prop.lineheight * nbLine){
+      if(this.prop.height > this.prop.lineheight * this.conf.lines){
         if(elements[n].childNodes.length && elements[n].childNodes.length > 1){
-          this.handleChilds(elements[n], prop, nbLine);
+          this.handleChilds(elements[n]);
         } else if(elements[n].childNodes.length && elements[n].childNodes.length === 1 && elements[n].childNodes[0].nodeType === 3){
-          var childText = elements[n].childNodes[0].nodeValue;
-          while(prop.height > (prop.lineheight * nbLine)){
-            elements[n].childNodes[0].nodeValue = childText.slice(0, -1);
-            childText = elements[n].childNodes[0].nodeValue;
-          }
-          elements[n].childNodes[0].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+          this.simpleText(elements[n]);
         }
       }
-    };
+
+    }
   },
-  handleChilds: function(e, prop, nbLine){
+  simpleText: function(element){
+    var childText = element.childNodes[0].nodeValue;
+    while(this.prop.height > (this.prop.lineheight * this.conf.lines)){
+      element.childNodes[0].nodeValue = childText.slice(0, -1);
+      childText = element.childNodes[0].nodeValue;
+    }
+    element.childNodes[0].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+    if(this.prop.height > this.prop.lineheight * this.conf.lines){ //edge case
+      element.childNodes[0].nodeValue = ' ' + element.childNodes[0].nodeValue.slice(0, -(this.conf.ellipsis.length + 1)).trim().slice(0, -(this.conf.ellipsis.length)) + '...';
+    }
+  },
+  handleChilds: function(e){
     var domChilds = e.childNodes;
     for(var i = domChilds.length - 1; i >= 0; i--){
       var displayOrigin;
@@ -74,30 +103,38 @@ var Ellipsis = {
         domChilds[i].style.display = 'none';
       }
 
-      if(prop.height <= prop.lineheight * nbLine){
+      if(this.prop.height <= this.prop.lineheight * this.conf.lines){
         if(domChilds[i].nodeType === 3){
           domChilds[i].nodeValue = displayOrigin;
           var childText = domChilds[i].nodeValue;
-          while(prop.height > (prop.lineheight * nbLine)){
+          while(this.prop.height > (this.prop.lineheight * this.conf.lines)){
             domChilds[i].nodeValue = childText.slice(0, -1);
             childText = domChilds[i].nodeValue;
           }
           domChilds[i].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
-          if(prop.height > prop.lineheight * nbLine){ //edge case
-            domChilds[i].nodeValue = domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length);
-            continue;
+          if(this.prop.height > this.prop.lineheight * this.conf.lines){ //edge case
+            domChilds[i].nodeValue = ' ' + domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
+            if(domChilds[i].nodeValue.length > 1){
+               domChilds[i].nodeValue = domChilds[i].nodeValue + this.conf.ellipsis;
+            } else {
+              continue;
+            }
           }
         } else {
           domChilds[i].style.display = displayOrigin;
           var childText = domChilds[i].innerHTML;
-          while(prop.height > (prop.lineheight * nbLine)){
+          while(this.prop.height > (this.prop.lineheight * this.conf.lines)){
             domChilds[i].innerHTML = childText.slice(0, -1);
             childText = domChilds[i].innerHTML;
           }
           domChilds[i].innerHTML = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
-          if(prop.height > prop.lineheight * nbLine){ //edge case
-            domChilds[i].innerHTML = domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length);
-            continue;
+          if(this.prop.height > this.prop.lineheight * this.conf.lines){ //edge case
+            domChilds[i].innerHTML = ' ' + domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
+            if(domChilds[i].innerHTML.length > 1){
+              domChilds[i].innerHTML = domChilds[i].innerHTML + this.conf.ellipsis;
+            } else {
+              continue;
+            }
           }
         }
         break;
@@ -108,17 +145,20 @@ var Ellipsis = {
   }
 }
 
+var EllipsisClass = function(opts){
+  return new Ellipsis(opts);
+}
 
 if (typeof exports != 'undefined') {
   if (typeof module != 'undefined' && module.exports) {
-    exports = module.exports = Ellipsis;
+    exports = module.exports = EllipsisClass;
   }
-  exports.Ellipsis = Ellipsis;
+  exports.Ellipsis = EllipsisClass;
 } else if(typeof module != 'undefined'){
-  module.Ellipsis = Ellipsis
+  module.Ellipsis = EllipsisClass;
 }
 
-self.Ellipsis = Ellipsis;
-return Ellipsis;
+self.Ellipsis = EllipsisClass;
+return EllipsisClass;
 
 }());
