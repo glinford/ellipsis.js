@@ -153,6 +153,13 @@ var EllipsisClass = function(opts){
   return new Ellipsis(opts);
 }
 
+//RequireJS Style
+if (typeof define === "function" && define.amd) {
+	define("ellipsis", [], function() {
+		return EllipsisClass;
+	});
+}
+
 self.Ellipsis = EllipsisClass;
 return EllipsisClass;
 
