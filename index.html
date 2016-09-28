@@ -13,6 +13,7 @@
   }
   section {
     margin-left: 25vw;
+    margin-bottom:20px;
   }
   article {
     width: 50vw;
@@ -38,8 +39,9 @@
     text-align:center;
   }
   footer {
-    float:right;
-    margin-right:5vw;
+    width:90vw;
+    margin-left: 5vw;
+    text-align:center;
   }
   span {
     font-style: oblique;
@@ -82,8 +84,28 @@
 
 	</section>
 
+  <section>
+    <h2 class="title">Demo Code</h2>
+    <pre>
+      &lt;script src="ellipsis.min.js"&gt;&lt;/script&gt;
+      &lt;script type="text/javascript"&gt;
+
+        Ellipsis({
+          class: '.title',
+          lines: 1
+        });//for the titles
+
+        Ellipsis({
+          class: '.normal',
+          lines: 3
+        }) //for that specific last block
+
+        Ellipsis(); //standard usage
+      &lt;/script&gt;
+    </pre>
+  </section>
 	<footer>
-		<p>Build by <a href="https://github.com/glinford/ellipsis.js">@glinford</a></p>
+		<p><a href="https://github.com/glinford/ellipsis.js">Documentation</a> | <a href="https://github.com/glinford/ellipsis.js">Github</a> | Build by <a href="https://github.com/glinford/ellipsis.js">@glinford</a></p>
     <script src="ellipsis.min.js"></script>
     <script type="text/javascript">
 
