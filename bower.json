@@ -1,0 +1,25 @@
+{
+  "name": "ellipsis.js",
+  "description": "Ellipsis.js - Pure Javascript Library to handle multilines ellipsis",
+  "main": "ellipsis.js",
+  "authors": [
+    "glinford"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "ellipsis",
+    "js",
+    "multiline",
+    "clamp",
+    "complex",
+    "css"
+  ],
+  "homepage": "https://github.com/glinford/ellipsis.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
