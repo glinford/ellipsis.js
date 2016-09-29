@@ -192,6 +192,10 @@
               this.processBreak(domChilds[i], domChilds[i - 1]);
               if(this.isNotCorrect()){ //edge case
                 this.processBreak(domChilds[i], domChilds[i - 1], true);
+                if(this.isNotCorrect()){
+                  e.removeChild(domChilds[i]);
+                  continue;
+                }
               }
             }
           } else {
@@ -218,6 +222,10 @@
               this.processBreak(domChilds[i], domChilds[i - 1]);
               if(this.isNotCorrect()){ //edge case
                 this.processBreak(domChilds[i], domChilds[i - 1], true);
+                if(this.isNotCorrect()){
+                  e.removeChild(domChilds[i]);
+                  continue;
+                }
               }
             }
           }
