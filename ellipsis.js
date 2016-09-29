@@ -3,7 +3,7 @@
 'use strict';
 
 var defaultConf = {
-  ellipsis: '...',
+  ellipsis: '…',
   debounce: 100,
   responsive: true,
   class: '.clamp',
@@ -103,7 +103,7 @@ Ellipsis.prototype = {
     }
     element.childNodes[0].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
     if(this.prop.height > this.prop.lineheight * this.lines.current){ //edge case
-      element.childNodes[0].nodeValue = ' ' + element.childNodes[0].nodeValue.slice(0, -(this.conf.ellipsis.length + 1)).trim().slice(0, -(this.conf.ellipsis.length)) + '...';
+      element.childNodes[0].nodeValue = ' ' + element.childNodes[0].nodeValue.slice(0, -(this.conf.ellipsis.length + 1)).trim().slice(0, -(this.conf.ellipsis.length)) + this.conf.ellipsis;
     }
   },
   handleChilds: function(e){
