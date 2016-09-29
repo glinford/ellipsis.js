@@ -93,15 +93,17 @@
         Ellipsis({
           class: '.title',
           lines: 1
-        });//for the titles
+        }); //specific conf on titles
 
         Ellipsis({
           class: '.normal',
           lines: 3,
           portrait: 1
-        }) //for that specific last block
+        }) //different maximum lines in portrait/landscape
 
-        Ellipsis(); //standard usage
+        Ellipsis({
+					break_word: false
+				}); //standard usage but we don't want the ellipsis to break words
       &lt;/script&gt;
     </pre>
   </section>
@@ -118,10 +120,12 @@
       Ellipsis({
         class: '.normal',
         lines: 3,
-        portrait: 1
-      });
+        portrait: 1,
+      }); //different maximum lines in portrait/landscape
 
-      Ellipsis(); //default conf with .clamp
+      Ellipsis({
+				break_word: false
+			}); //standard usage but we don't want the ellipsis to break words
     </script>
 	</footer>
 
