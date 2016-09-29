@@ -62,6 +62,20 @@
       }
       this.add();
     },
+    createProp: function(element){
+      this.prop = {
+        get height(){
+          return parseInt(getComputedStyle(element).getPropertyValue("height"), 10);
+        },
+        get lineheight(){
+          var lineh = getComputedStyle(element).getPropertyValue("line-height");
+          if(String('normal|initial|inherit').indexOf(lineh) > -1){ //very specific case
+            lineh = parseInt(getComputedStyle(element).getPropertyValue("font-size"), 10) + 2;
+          }
+          return parseInt(lineh, 10);
+        }
+      };
+    },
     add: function(){
       var elements = document.querySelectorAll(this.conf.class);
       for(var n = 0; n < elements.length; n++){
@@ -73,18 +87,7 @@
           }
         }
 
-        this.prop = {
-          get height(){
-            return parseInt(getComputedStyle(elements[n]).getPropertyValue("height"), 10);
-          },
-          get lineheight(){
-            var lineh = getComputedStyle(elements[n]).getPropertyValue("line-height");
-            if(String('normal|initial|inherit').indexOf(lineh) > -1){ //very specific case
-              lineh = parseInt(getComputedStyle(elements[n]).getPropertyValue("font-size"), 10) + 2;
-            }
-            return parseInt(lineh, 10);
-          }
-        };
+        this.createProp(elements[n]);
 
         if(this.isNotCorrect()){
           if(elements[n].childNodes.length && elements[n].childNodes.length > 1){
@@ -114,9 +117,9 @@
           words.push(this.conf.ellipsis);
           return [words.join(' '), str2]
         } else if(!words[words.length - 1] && str2){
-          var str2 = ' ' + str2.trim().replace(/(,$)/g, "").replace(/(\.$)/g, "") + ' ';
+          var st = ' ' + str2.trim().replace(/(,$)/g, "").replace(/(\.$)/g, "") + ' ';
           words.push(this.conf.ellipsis);
-          return [words.join(' '), str2];
+          return [words.join(' '), st];
         }
       }
     },
@@ -156,6 +159,7 @@
     },
     handleChilds: function(e){
       var domChilds = e.childNodes;
+      var childText;
       for(var i = domChilds.length - 1; i >= 0; i--){
         var displayOrigin;
         if(domChilds[i].nodeType === 3){
@@ -169,7 +173,7 @@
         if(this.prop.height <= this.prop.lineheight * this.lines.current){
           if(domChilds[i].nodeType === 3){
             domChilds[i].nodeValue = displayOrigin;
-            var childText = domChilds[i].nodeValue;
+            childText = domChilds[i].nodeValue;
             while(this.prop.height > (this.prop.lineheight * this.lines.current)){
               domChilds[i].nodeValue = childText.slice(0, -1);
               childText = domChilds[i].nodeValue;
@@ -200,7 +204,7 @@
             }
           } else {
             domChilds[i].style.display = displayOrigin;
-            var childText = domChilds[i].innerHTML;
+            childText = domChilds[i].innerHTML;
             while(this.prop.height > (this.prop.lineheight * this.lines.current)){
               domChilds[i].innerHTML = childText.slice(0, -1);
               childText = domChilds[i].innerHTML;
