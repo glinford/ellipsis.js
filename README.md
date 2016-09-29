@@ -83,6 +83,7 @@ To Do / Contributions:
 
 - Speed Improvement
 - SVG text support
+- Gradient instead of "String" Ellipsis
 
 Feel free to branch and PR :)
 
