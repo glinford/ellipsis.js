@@ -14,8 +14,8 @@
 
   var merge = function(obj1, obj2){
     var obj3 = {};
-    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+    for (var attrn in obj1) { obj3[attrn] = obj1[attrn]; }
+    for (var attrnm in obj2) { obj3[attrnm] = obj2[attrnm]; }
     return obj3;
   };
 
@@ -180,7 +180,7 @@
               if(this.isNotCorrect()){ //edge case
                 domChilds[i].nodeValue = ' ' + domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
                 if(domChilds[i].nodeValue.length > 1){
-                  domChilds[i].nodeValue = domChilds[i].nodeValue + this.conf.ellipsis;
+                  domChilds[i].nodeValue = domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
                 } else {
                   continue;
                 }
@@ -206,7 +206,7 @@
               if(this.isNotCorrect()){ //edge case
                 domChilds[i].innerHTML = ' ' + domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
                 if(domChilds[i].innerHTML.length > 1){
-                  domChilds[i].innerHTML = domChilds[i].innerHTML + this.conf.ellipsis;
+                  domChilds[i].innerHTML = domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
                 } else {
                   continue;
                 }
@@ -227,11 +227,11 @@
         }
       }
     }
-  }
+  };
 
   var EllipsisClass = function(opts){
     return new Ellipsis(opts);
-  }
+  };
 
   //RequireJS Style
   if (typeof define === "function" && define.amd) {
