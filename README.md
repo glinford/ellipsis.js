@@ -53,8 +53,17 @@ Configuration properties:
 	  responsive: true, //if you want the ellipsis to move with the window resizing
 	  class: '.clamp', //default class to apply the ellipsis
 	  lines: 2 //default number of lines when the ellipsis will appear
-	  portrait: null //default no change, put a number of lines if you want a different number of lines in portrait mode
+	  portrait: null //default no change, put a number of lines if you want a different number of lines in portrait mode,
+	  break_word: true //default the ellipsis can truncate words
     }
+
+Lists:
+- debouce | Number | Default: 100 | Value in Milliseconds
+- reponsive | Boolean | Default: true | True is you want the ellipsis to be responsive, false if not.
+- class | String | Default: '.clamp' | A class or valid query selector where you want your ellipsis to appear
+- lines | Number | Default: 2 | The maximum number of lines before ellipsis
+- portrait | Number | Default: null | If you want a different number from the lines property on portrait mode.
+- break_word | Boolean | Default: true | If true the words can be truncated by the ellipsis, eg: "Hello Wo…", if false they won't, eg "Hello …"
 
 ----------
 
