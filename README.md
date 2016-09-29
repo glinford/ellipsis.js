@@ -48,7 +48,7 @@ Configuration properties:
 -------------------
 
     {
-      ellipsis: '...', //default ellipsis value
+      ellipsis: '…', //default ellipsis value
 	  debounce: 100, //if you want to chill out your memory usage on resizing
 	  responsive: true, //if you want the ellipsis to move with the window resizing
 	  class: '.clamp', //default class to apply the ellipsis
