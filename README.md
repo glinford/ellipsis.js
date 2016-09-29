@@ -72,5 +72,18 @@ Known Issues:
 
 By default the line-height property of a text is 'normal' which cannot be computed with getComputedStyle() method. If that occurs we will replace the line-height from normal to font-size + 2px which is the default value for most of browsers/OS.
 
+The library does some heavy computation so it wont be suitable for pages that have like 100 elements with 100 lines each. I will work on optimization in future releases.
+
+SVG text not supported.
+
 ----------
 
+To Do / Contributions:
+-------------------
+
+- Speed Improvement
+- SVG text support
+
+Feel free to branch and PR :)
+
+----------
