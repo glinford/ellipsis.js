@@ -65,7 +65,8 @@
     createProp: function(element){
       this.prop = {
         get height(){
-          return parseInt(getComputedStyle(element).getPropertyValue("height"), 10);
+          var viewportOffset = element.getBoundingClientRect();
+          return parseInt(viewportOffset.bottom - viewportOffset.top, 10);
         },
         get lineheight(){
           var lineh = getComputedStyle(element).getPropertyValue("line-height");
