@@ -207,8 +207,8 @@
             domChilds[i].style.display = displayOrigin;
             childText = domChilds[i].innerHTML;
             while(this.prop.height > (this.prop.lineheight * this.lines.current)){
-              domChilds[i].innerHTML = childText.slice(0, -1);
-              childText = domChilds[i].innerHTML;
+              domChilds[i].innerText = childText.slice(0, -1);
+              childText = domChilds[i].innerText;
             }
             if(this.conf.break_word){
               domChilds[i].innerHTML = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
