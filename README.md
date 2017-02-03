@@ -67,6 +67,32 @@ Lists:
 
 ----------
 
+----------
+"Manual" mode:
+-------------------
+
+You can use the Ellipsis.js object to apply the configuration to additional DOM elements after it
+has been loaded:
+
+```javascript
+var ellipsis = Ellipsis();
+var elements = document.getElementsByClassName('.special-title');
+ellipsis.add(elements);
+```
+
+This can be done with a single element:
+
+```javascript
+ellipsis.add(elements[0]);
+```
+
+If using Ellipsis.js manually, you can disable the selector option in the configuration like this:
+
+```javascript
+var ellipsisConf = {class: false};
+var ellipsis = Ellipsis(ellipsisConf);
+```
+
 Known Issues:
 -------------------
 

@@ -12,6 +12,43 @@
     break_word: true
   };
 
+  var _idCounter = 0;
+
+  var newId = function(){
+    _idCounter += 1;
+    return _idCounter;
+  };
+
+  var setIdAttribute = function(element, id){
+    element.setAttribute('data-ellipsis-id', id);
+  };
+
+  var getIdAttribute = function(element){
+    return element.getAttribute('data-ellipsis-id');
+  };
+
+  var storeCache = function(cache, element){
+    var id = newId();
+    setIdAttribute(element, id);
+    cache[id] = cache[id] || {};
+    cache[id].element = element;
+    cache[id].innerHTML = element.innerHTML;
+  };
+
+  var retrieveCache = function(cache, element){
+    if(cache){
+      return cache[getIdAttribute(element)];
+    } else {
+      return null;
+    }
+  };
+
+  var getCachedElements = function(cache){
+    return Object.keys(cache).map(function(value, index){
+      return cache[value].element;
+    });
+  };
+
   var merge = function(obj1, obj2){
     var obj3 = {};
     for (var attrn in obj1) { obj3[attrn] = obj1[attrn]; }
@@ -22,6 +59,7 @@
   function Ellipsis(opts) {
     var conf = merge(defaultConf, opts || {});
     this.create(conf);
+    this.add();
   }
 
   Ellipsis.prototype = {
@@ -29,13 +67,6 @@
     prop: {},
     lines: {},
     temp: null,
-    cloneCache: function(nodelist){
-      var arr = [];
-      for(var i = 0; i < nodelist.length; i++){
-        arr.push(nodelist[i].innerHTML);
-      }
-      return arr;
-    },
     create: function(opts){
       this.conf = opts;
       this.lines = {
@@ -48,19 +79,18 @@
       };
 
       if(this.conf.responsive){
-        this.temp = this.cloneCache(document.querySelectorAll(this.conf.class));
+        this.temp = {};
         var debounce;
         var listener = function(event) {
           clearTimeout(debounce);
           debounce = setTimeout(function(){
-            this.add();
+            this.add(getCachedElements(this.temp));
           }.bind(this), this.conf.debounce);
         };
 
         window.addEventListener('resize', listener.bind(this), false);
         window.removeEventListener('beforeunload', listener.bind(this), false);
       }
-      this.add();
     },
     createProp: function(element){
       this.prop = {
@@ -77,27 +107,43 @@
         }
       };
     },
-    add: function(){
-      var elements = document.querySelectorAll(this.conf.class);
-      for(var n = 0; n < elements.length; n++){
+    add: function(elements){
+      if(!elements && this.conf.class){
+        elements = document.querySelectorAll(this.conf.class);
+      }
 
-        if(this.conf.responsive){
+      if (elements){
+        if(elements.length){
+          for(var i = 0; i < elements.length; i++){
+            this.addElement(elements[i]);
+          }
+        } else if (elements.length === undefined) {
+          this.addElement(elements);
+        }
+      }
+    },
+    addElement: function(element){
+      if(this.conf.responsive){
+        var cached = retrieveCache(this.temp, element);
+        if(!cached){
+          storeCache(this.temp, element);
+        } else {
           // insert cached element for Resizing
-          if(this.temp && this.temp[n] != elements[n].innerHTML){
-            elements[n].innerHTML = this.temp[n];
+          if(element.innerHTML !== cached.innerHTML){
+            element.innerHTML = cached.innerHTML;
           }
         }
+      }
 
-        this.createProp(elements[n]);
+      this.createProp(element);
 
-        if(this.isNotCorrect()){
-          if(elements[n].childNodes.length && elements[n].childNodes.length > 1){
-            this.handleChilds(elements[n]);
-          } else if(elements[n].childNodes.length && elements[n].childNodes.length === 1 && elements[n].childNodes[0].nodeType === 3){
-            this.simpleText(elements[n]);
-          }
+      if(this.isNotCorrect()){
+        if(element.childNodes.length && element.childNodes.length > 1){
+          this.handleChildren(element);
+        } else if(element.childNodes.length && element.childNodes.length === 1 &&
+          element.childNodes[0].nodeType === 3){
+          this.simpleText(element);
         }
-
       }
     },
     breakWord: function(str, str2, fix){
@@ -116,7 +162,7 @@
         if(words[words.length - 1]){
           words[words.length - 1] = words[words.length - 1].replace(/(,$)/g, "").replace(/(\.$)/g, "");
           words.push(this.conf.ellipsis);
-          return [words.join(' '), str2]
+          return [words.join(' '), str2];
         } else if(!words[words.length - 1] && str2){
           var st = ' ' + str2.trim().replace(/(,$)/g, "").replace(/(\.$)/g, "") + ' ';
           words.push(this.conf.ellipsis);
@@ -158,77 +204,77 @@
         dTwo.nodeValue = r[1];
       }
     },
-    handleChilds: function(e){
-      var domChilds = e.childNodes;
+    handleChildren: function(e){
+      var domChildren = e.childNodes;
       var childText;
-      for(var i = domChilds.length - 1; i >= 0; i--){
+      for(var i = domChildren.length - 1; i >= 0; i--){
         var displayOrigin;
-        if(domChilds[i].nodeType === 3){
-          displayOrigin = domChilds[i].nodeValue;
-          domChilds[i].nodeValue = '';
+        if(domChildren[i].nodeType === 3){
+          displayOrigin = domChildren[i].nodeValue;
+          domChildren[i].nodeValue = '';
         } else {
-          displayOrigin = getComputedStyle(domChilds[i]).getPropertyValue("display");
-          domChilds[i].style.display = 'none';
+          displayOrigin = getComputedStyle(domChildren[i]).getPropertyValue("display");
+          domChildren[i].style.display = 'none';
         }
 
         if(this.prop.height <= this.prop.lineheight * this.lines.current){
-          if(domChilds[i].nodeType === 3){
-            domChilds[i].nodeValue = displayOrigin;
-            childText = domChilds[i].nodeValue;
+          if(domChildren[i].nodeType === 3){
+            domChildren[i].nodeValue = displayOrigin;
+            childText = domChildren[i].nodeValue;
             while(this.prop.height > (this.prop.lineheight * this.lines.current)){
-              domChilds[i].nodeValue = childText.slice(0, -1);
-              childText = domChilds[i].nodeValue;
+              domChildren[i].nodeValue = childText.slice(0, -1);
+              childText = domChildren[i].nodeValue;
             }
 
             if(this.conf.break_word){
-              domChilds[i].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+              domChildren[i].nodeValue = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
               if(this.isNotCorrect()){ //edge case
-                domChilds[i].nodeValue = ' ' + domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
-                if(domChilds[i].nodeValue.length > 1){
-                  domChilds[i].nodeValue = domChilds[i].nodeValue.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+                domChildren[i].nodeValue = ' ' + domChildren[i].nodeValue.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
+                if(domChildren[i].nodeValue.length > 1){
+                  domChildren[i].nodeValue = domChildren[i].nodeValue.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
                 } else {
                   continue;
                 }
               }
             } else {
-              if(!domChilds[i].innerHTML && !domChilds[i].nodeValue){
+              if(!domChildren[i].innerHTML && !domChildren[i].nodeValue){
                 continue;
               }
-              this.processBreak(domChilds[i], domChilds[i - 1]);
+              this.processBreak(domChildren[i], domChildren[i - 1]);
               if(this.isNotCorrect()){ //edge case
-                this.processBreak(domChilds[i], domChilds[i - 1], true);
+                this.processBreak(domChildren[i], domChildren[i - 1], true);
                 if(this.isNotCorrect()){
-                  e.removeChild(domChilds[i]);
+                  e.removeChild(domChildren[i]);
                   continue;
                 }
               }
             }
           } else {
-            domChilds[i].style.display = displayOrigin;
-            childText = domChilds[i].innerHTML;
+            domChildren[i].style.display = displayOrigin;
+            childText = domChildren[i].innerHTML;
             while(this.prop.height > (this.prop.lineheight * this.lines.current)){
-              domChilds[i].innerText = childText.slice(0, -1);
-              childText = domChilds[i].innerText;
+              domChildren[i].innerText = childText.slice(0, -1);
+              childText = domChildren[i].innerText;
             }
             if(this.conf.break_word){
-              domChilds[i].innerHTML = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+              domChildren[i].innerHTML = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
               if(this.isNotCorrect()){ //edge case
-                domChilds[i].innerHTML = ' ' + domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
-                if(domChilds[i].innerHTML.length > 1){
-                  domChilds[i].innerHTML = domChilds[i].innerHTML.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+                domChildren[i].innerHTML = ' ' + domChildren[i].innerHTML.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
+                if(domChildren[i].innerHTML.length > 1){
+                  domChildren[i].innerHTML = domChildren[i].innerHTML.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
                 } else {
                   continue;
                 }
               }
             } else {
-              if(!domChilds[i].innerHTML && !domChilds[i].nodeValue){
+              if(!domChildren[i].innerHTML && !domChildren[i].nodeValue){
                 continue;
               }
-              this.processBreak(domChilds[i], domChilds[i - 1]);
+              this.processBreak(domChildren[i], domChildren[i - 1]);
               if(this.isNotCorrect()){ //edge case
-                this.processBreak(domChilds[i], domChilds[i - 1], true);
+                this.processBreak(domChildren[i], domChildren[i - 1], true);
                 if(this.isNotCorrect()){
-                  e.removeChild(domChilds[i]);
+                  e.removeChild(domChildren[i]);
                   continue;
                 }
               }
@@ -236,7 +282,7 @@
           }
           break;
         } else {
-          e.removeChild(domChilds[i]);
+          e.removeChild(domChildren[i]);
         }
       }
     }
