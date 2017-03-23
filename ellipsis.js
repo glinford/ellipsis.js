@@ -237,6 +237,9 @@
       var childText;
       for(var i = domChildren.length - 1; i >= 0; i--){
         var displayOrigin;
+        if(domChildren[i].nodeType === 8){
+          continue; // skip comment nodes
+        }
         if(domChildren[i].nodeType === 3){
           displayOrigin = domChildren[i].nodeValue;
           domChildren[i].nodeValue = '';
