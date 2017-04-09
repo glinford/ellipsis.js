@@ -4,7 +4,7 @@
 
   var defaultConf = {
     ellipsis: '…',
-    debounce: 100,
+    debounce: 0,
     responsive: true,
     class: '.clamp',
     lines: 2,
@@ -13,6 +13,8 @@
   };
 
   var _idCounter = 0;
+
+  var RAF_SUPPORTED = !!window.requestAnimationFrame;
 
   var newId = function(){
     _idCounter += 1;
@@ -80,13 +82,41 @@
 
       if(this.conf.responsive){
         this.temp = {};
-        var debounce;
-        var listener = function(event) {
-          clearTimeout(debounce);
-          debounce = setTimeout(function(){
-            this.add(getCachedElements(this.temp));
-          }.bind(this), this.conf.debounce);
-        };
+
+        var debounceTime = this.conf.debounce;
+        var listener;
+
+        if (RAF_SUPPORTED && !debounceTime) {
+          this._isScheduled = false;
+
+          var self = this;
+          listener = function(event) {
+            if (!self._isScheduled) {
+              self._isScheduled = true;
+
+              window.requestAnimationFrame(function() {
+                console.log("RAF");
+                self._isScheduled = false;
+                self.add(getCachedElements(self.temp));
+              });
+            }
+          }
+        } else {
+          // This is for in case the `debounce` is set to 0 and the browser
+          // does not support requestAnimationFrame. We don't want to swamp
+          // the browser on a resize so we "fake" the requestAnimationFrame
+          // functionality with the same debounce time (60 FPS).
+          debounceTime = debounceTime || 66;
+
+          var debounce;
+          listener = function(event) {
+            clearTimeout(debounce);
+            debounce = setTimeout(function(){
+              console.log("DEBOUNCE");
+              this.add(getCachedElements(this.temp));
+            }.bind(this), debounceTime);
+          };
+        }
 
         window.addEventListener('resize', listener.bind(this), false);
         window.removeEventListener('beforeunload', listener.bind(this), false);
