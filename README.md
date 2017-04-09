@@ -49,7 +49,7 @@ Configuration properties:
 
     {
       ellipsis: '…', //default ellipsis value
-	  debounce: 100, //if you want to chill out your memory usage on resizing
+	  debounce: 0, //if you want to chill out your memory usage on resizing
 	  responsive: true, //if you want the ellipsis to move with the window resizing
 	  class: '.clamp', //default class to apply the ellipsis
 	  lines: 2 //default number of lines when the ellipsis will appear
@@ -58,14 +58,13 @@ Configuration properties:
     }
 
 Lists:
-- debouce | Number | Default: 100 | Value in Milliseconds
-- reponsive | Boolean | Default: true | True is you want the ellipsis to be responsive, false if not.
+- debounce | Number | Default: 0 | Value in Milliseconds. If set to 0, it will use `window.requestAnimationFrame` (or a polyfill for IE <= 9) to debounce the `resize` events.
+- responsive | Boolean | Default: true | True is you want the ellipsis to be responsive, false if not.
 - class | String | Default: '.clamp' | A class or valid query selector where you want your ellipsis to appear
 - lines | Number | Default: 2 | The maximum number of lines before ellipsis
 - portrait | Number | Default: null | If you want a different number from the lines property on portrait mode.
 - break_word | Boolean | Default: true | If true the words can be truncated by the ellipsis, eg: "Hello Wo…", if false they won't, eg "Hello …"
 
-----------
 
 ----------
 "Manual" mode:
