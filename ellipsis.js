@@ -95,7 +95,6 @@
               self._isScheduled = true;
 
               window.requestAnimationFrame(function() {
-                console.log("RAF");
                 self._isScheduled = false;
                 self.add(getCachedElements(self.temp));
               });
@@ -106,13 +105,12 @@
           // does not support requestAnimationFrame. We don't want to swamp
           // the browser on a resize so we "fake" the requestAnimationFrame
           // functionality with the same debounce time (60 FPS).
-          debounceTime = debounceTime || 66;
+          debounceTime = debounceTime || 16;
 
           var debounce;
           listener = function(event) {
             clearTimeout(debounce);
             debounce = setTimeout(function(){
-              console.log("DEBOUNCE");
               this.add(getCachedElements(this.temp));
             }.bind(this), debounceTime);
           };
