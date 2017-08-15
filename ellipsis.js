@@ -220,14 +220,14 @@
       return this.prop.height > (this.prop.lineheight * this.lines.current);
     },
     processBreak: function(dOne, dTwo, fix){
-      var r = this.breakWord(dOne.innerHTML || dOne.nodeValue, dTwo.innerHTML || dTwo.nodeValue, fix);
-      if(dOne.innerHTML){
-        dOne.innerHTML = r[0];
+      var r = this.breakWord(dOne.innerText || dOne.nodeValue, dTwo.innerText || dTwo.nodeValue, fix);
+      if(dOne.innerText){
+        dOne.innerText = r[0];
       } else {
         dOne.nodeValue = r[0];
       }
-      if(dTwo.innerHTML){
-        dTwo.innerHTML = r[1];
+      if(dTwo.innerText){
+        dTwo.innerText = r[1];
       } else {
         dTwo.nodeValue = r[1];
       }
@@ -265,7 +265,7 @@
                 }
               }
             } else {
-              if(!domChildren[i].innerHTML && !domChildren[i].nodeValue){
+              if(!domChildren[i].innerText && !domChildren[i].nodeValue){
                 continue;
               }
               this.processBreak(domChildren[i], domChildren[i - 1]);
@@ -279,23 +279,23 @@
             }
           } else {
             domChildren[i].style.display = displayOrigin;
-            childText = domChildren[i].innerHTML;
+            childText = domChildren[i].innerText;
             while(this.prop.height > (this.prop.lineheight * this.lines.current)){
               domChildren[i].innerText = childText.slice(0, -1);
               childText = domChildren[i].innerText;
             }
             if(this.conf.break_word){
-              domChildren[i].innerHTML = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+              domChildren[i].innerText = childText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
               if(this.isNotCorrect()){ //edge case
-                domChildren[i].innerHTML = ' ' + domChildren[i].innerHTML.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
-                if(domChildren[i].innerHTML.length > 1){
-                  domChildren[i].innerHTML = domChildren[i].innerHTML.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
+                domChildren[i].innerText = ' ' + domChildren[i].innerText.slice(0, -this.conf.ellipsis.length).trim().slice(0, -this.conf.ellipsis.length);
+                if(domChildren[i].innerText.length > 1){
+                  domChildren[i].innerText = domChildren[i].innerText.slice(0, -this.conf.ellipsis.length) + this.conf.ellipsis;
                 } else {
                   continue;
                 }
               }
             } else {
-              if(!domChildren[i].innerHTML && !domChildren[i].nodeValue){
+              if(!domChildren[i].innerText && !domChildren[i].nodeValue){
                 continue;
               }
               this.processBreak(domChildren[i], domChildren[i - 1]);
