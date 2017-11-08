@@ -124,7 +124,7 @@
       }
     },
     destroy: function(){
-      window.removeEventListener('resize', this.listener, false);
+      this.listener && window.removeEventListener('resize', this.listener, false);
     },
     createProp: function(element){
       this.prop = {
