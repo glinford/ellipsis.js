@@ -69,6 +69,7 @@
     prop: {},
     lines: {},
     temp: null,
+    listener: null,
     create: function(opts){
       this.conf = opts;
       this.lines = {
@@ -116,9 +117,14 @@
           };
         }
 
-        window.addEventListener('resize', listener.bind(this), false);
-        window.removeEventListener('beforeunload', listener.bind(this), false);
+        this.listener = listener.bind(this);
+
+        window.addEventListener('resize', this.listener, false);
+        window.removeEventListener('beforeunload', this.listener, false);
       }
+    },
+    destroy: function(){
+      window.removeEventListener('resize', this.listener, false);
     },
     createProp: function(element){
       this.prop = {
