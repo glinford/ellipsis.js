@@ -6,7 +6,7 @@
     ellipsis: '…',
     debounce: 0,
     responsive: true,
-    class: '.clamp',
+    className: '.clamp',
     lines: 2,
     portrait: null,
     break_word: true
@@ -142,8 +142,8 @@
       };
     },
     add: function(elements){
-      if(!elements && this.conf.class){
-        elements = document.querySelectorAll(this.conf.class);
+      if(!elements && this.conf.className){
+        elements = document.querySelectorAll(this.conf.className);
       }
 
       if (elements){
