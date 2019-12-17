@@ -14,6 +14,8 @@
 
   var _idCounter = 0;
 
+  var windowWidth = window.innerWidth;
+
   var RAF_SUPPORTED = !!window.requestAnimationFrame;
 
   var newId = function(){
@@ -92,13 +94,16 @@
 
           var self = this;
           listener = function(event) {
-            if (!self._isScheduled) {
-              self._isScheduled = true;
+            if ( window.innerWidth != windowWidth ) {
+              windowWidth = window.innerWidth;
+              if (!self._isScheduled) {
+                self._isScheduled = true;
 
-              window.requestAnimationFrame(function() {
-                self._isScheduled = false;
-                self.add(getCachedElements(self.temp));
-              });
+                window.requestAnimationFrame(function() {
+                  self._isScheduled = false;
+                  self.add(getCachedElements(self.temp));
+                });
+              }
             }
           }
         } else {
@@ -110,10 +115,13 @@
 
           var debounce;
           listener = function(event) {
-            clearTimeout(debounce);
-            debounce = setTimeout(function(){
-              this.add(getCachedElements(this.temp));
-            }.bind(this), debounceTime);
+            if ( window.innerWidth != windowWidth ) {
+              windowWidth = window.innerWidth;
+              clearTimeout(debounce);
+              debounce = setTimeout(function(){
+                this.add(getCachedElements(this.temp));
+              }.bind(this), debounceTime);
+            }
           };
         }
 
