@@ -1,6 +1,6 @@
 {
   "name": "ellipsis.js",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Ellipsis.js - Pure Javascript Library to handle multilines ellipsis",
   "main": "ellipsis.js",
   "scripts": {

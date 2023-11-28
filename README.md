@@ -1,3 +1,6 @@
+THIS LIB IS UNMAINTAINED SINCE 2018, USE AT YOUR OWN RISK, IDEALLY DO NOT USE AT ALL.
+===================
+
 Ellipsis.js
 ===================
 
