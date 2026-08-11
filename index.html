@@ -1,134 +1,242 @@
-<!DOCTYPE HTML>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Ellipsis.js - Pure Javascript Library to handle multilines ellipsis</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Compare Ellipsis.js v0 DOM truncation with v1 native CSS line-clamp.">
+  <title>Ellipsis.js — v0 and v1 comparison</title>
   <style>
-  body {
-    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 16px;
-  }
-  section {
-    margin-left: 25vw;
-    margin-bottom:20px;
-  }
-  article {
-    width: 50vw;
-    margin-bottom:30px;
-  }
-  .title{
-    font-size: 18px;
-    font-weight: 500;
-	  line-height: 20px;
-  }
-  section .title{
-    width: 50vw;
-  }
-  header .title{
-    font-size: 22px;
-    font-weight: 600;
-	  line-height: 24px;
-  }
-  header {
-    margin-top: 40px;
-    margin-bottom: 40px;
-    width:100vw;
-    text-align:center;
-  }
-  footer {
-    width:90vw;
-    margin-left: 5vw;
-    text-align:center;
-  }
-  span {
-    font-style: oblique;
-  }
-  .normal{
-    line-height: normal;
-    font-size: 10px;
-    width: 30vw;
-    margin-left:10vw;
-  }
+    :root {
+      color-scheme: light dark;
+      font-family: system-ui, sans-serif;
+      line-height: 1.5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    main {
+      width: min(70rem, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4rem 0;
+    }
+
+    header {
+      max-width: 44rem;
+      margin-bottom: 2.5rem;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0.75rem;
+      font-size: clamp(2rem, 6vw, 4rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      color: color-mix(in srgb, CanvasText 72%, transparent);
+      font-size: 1.125rem;
+    }
+
+    .orientation {
+      font-size: 0.875rem;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .version {
+      min-width: 0;
+      padding: 1.5rem;
+      border: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+      border-radius: 1rem;
+      background: color-mix(in srgb, Canvas 96%, CanvasText 4%);
+    }
+
+    .version-label {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, CanvasText 10%, transparent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .version-new .version-label {
+      background: #176b3a;
+      color: white;
+    }
+
+    .sample {
+      margin: 1.5rem 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid color-mix(in srgb, CanvasText 12%, transparent);
+    }
+
+    .sample h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .sample article {
+      line-height: 1.5;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 1.5rem 0 0;
+      padding: 1rem;
+      border-radius: 0.6rem;
+      background: color-mix(in srgb, CanvasText 8%, Canvas);
+      font-size: 0.8rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      color: color-mix(in srgb, CanvasText 65%, transparent);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    @media (max-width: 44rem) {
+      main {
+        padding-top: 2rem;
+      }
+
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
-
 <body>
-  <header>
-    <h1 class="title">Ellipsis.js - Pure Javascript Library to handle multilines ellipsis</h1>
-  </header>
-	<section>
-    <h2 class="title">Simple Text Block</h2>
-		<article class="clamp article-only-text">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh.
-      Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum.
-      Vivamus sed arcu mi. Nam semper cursus augue nec pulvinar. Integer ac justo laoreet, condimentum nunc non, luctus mi.
-		</article>
+  <main>
+    <header>
+      <h1>Ellipsis.js</h1>
+      <p class="intro">
+        The same content clamped to three lines by v0's DOM measurement and
+        v1's native CSS <code>line-clamp</code>. Resize the page to compare them.
+      </p>
+      <p class="orientation">
+        Detected viewport: <strong id="orientation"></strong>
+      </p>
+    </header>
 
-    <h2 class="title">Complex Text Block (with a, span and b elements)</h2>
-		<article class="clamp article-text-and-childs">
-      Lorem <b>ipsum</b> dolor sit amet, <a href="#">consectetur adipiscing elit</a>. Vivamus laoreet <span>ullamcorper</span> pharetra.
-      Fusce <b>facilisis</b> odio eu <a href="#">leo</a> laoreet aliquet vitae <a href="#">vitae nibh.</a> Duis quis quam vestibulum,
-      <span>faucibus eros sed, gravida odio.</span> Mauris sed tincidunt eros. <a href="#">Nunc varius quis enim quis</a> dictum.
-      Vivamus sed arcu mi. <a href="#">Nam semper cursus</a> augue nec pulvinar. <b>Integer ac justo laoreet</a>, condimentum nunc non, luctus mi.
-		</article>
+    <div class="comparison">
+      <section class="version version-old" aria-labelledby="legacy-heading">
+        <span class="version-label">v0.1.4 legacy</span>
+        <h2 id="legacy-heading">JavaScript truncation</h2>
+        <p>Measures line height, removes text and child nodes, then repeats after resizing.</p>
 
-    <h2 class="title">Block with 'normal' line-height property</h2>
-		<article class="normal">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh.
-      Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum.
-      Vivamus sed arcu mi. Nam semper cursus augue nec pulvinar.
-    </article>
+        <div class="sample">
+          <h3>Plain text</h3>
+          <article class="legacy-clamp">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh. Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum.
+          </article>
+        </div>
 
-	</section>
+        <div class="sample">
+          <h3>Inline child elements</h3>
+          <article class="legacy-clamp">
+            Lorem <strong>ipsum dolor</strong> sit amet, <a href="#docs">consectetur adipiscing elit</a>. Vivamus laoreet <em>ullamcorper pharetra</em>. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh. Duis quis quam vestibulum, faucibus eros sed, gravida odio.
+          </article>
+        </div>
 
-  <section>
-    <h2 class="title">Demo Code</h2>
-    <pre>
-      &lt;script src="ellipsis.min.js"&gt;&lt;/script&gt;
-      &lt;script type="text/javascript"&gt;
+        <pre><code>LegacyEllipsis({
+  className: '.legacy-clamp',
+  lines: 3,
+  portrait: 2
+});</code></pre>
+      </section>
 
-        Ellipsis({
-          class: '.title',
-          lines: 1
-        }); //specific conf on titles
+      <section class="version version-new" aria-labelledby="modern-heading">
+        <span class="version-label">v1.0 modern</span>
+        <h2 id="modern-heading">Native line clamp</h2>
+        <p>Sets CSS properties once. The browser handles layout, content and resizing.</p>
 
-        Ellipsis({
-          class: '.normal',
-          lines: 3,
-          portrait: 1
-        }) //different maximum lines in portrait/landscape
+        <div class="sample">
+          <h3>Plain text</h3>
+          <article class="modern-clamp">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ullamcorper pharetra. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh. Duis quis quam vestibulum, faucibus eros sed, gravida odio. Mauris sed tincidunt eros. Nunc varius quis enim quis dictum.
+          </article>
+        </div>
 
-        Ellipsis({
-					break_word: false
-				}); //standard usage but we don't want the ellipsis to break words
-      &lt;/script&gt;
-    </pre>
-  </section>
-	<footer>
-		<p><a href="https://github.com/glinford/ellipsis.js">Documentation</a> | <a href="https://github.com/glinford/ellipsis.js">Github</a> | Build by <a href="https://github.com/glinford/ellipsis.js">@glinford</a></p>
-    <script src="ellipsis.js"></script>
-    <script type="text/javascript">
+        <div class="sample">
+          <h3>Inline child elements</h3>
+          <article class="modern-clamp">
+            Lorem <strong>ipsum dolor</strong> sit amet, <a href="#docs">consectetur adipiscing elit</a>. Vivamus laoreet <em>ullamcorper pharetra</em>. Fusce facilisis odio eu leo laoreet aliquet vitae vitae nibh. Duis quis quam vestibulum, faucibus eros sed, gravida odio.
+          </article>
+        </div>
 
-      Ellipsis({
-        className: '.title',
-        lines: 1
-      }); //specific conf on titles
+        <pre><code>Ellipsis({
+  className: '.modern-clamp',
+  lines: 3,
+  portrait: 2
+});</code></pre>
+      </section>
+    </div>
 
-      Ellipsis({
-        className: '.normal',
-        lines: 3,
-        portrait: 1
-      }); //different maximum lines in portrait/landscape
+    <footer id="docs">
+      <a href="https://github.com/glinford/ellipsis.js">Documentation and source on GitHub</a>
+    </footer>
+  </main>
 
-      Ellipsis({
-				break_word: false
-			}); //standard usage but we don't want the ellipsis to break words
-    </script>
-	</footer>
+  <script src="ellipsis.legacy.js"></script>
+  <script>globalThis.LegacyEllipsis = globalThis.Ellipsis;</script>
+  <script src="ellipsis.js"></script>
+  <script>
+    const orientation = matchMedia('(orientation: portrait)');
+    const orientationLabel = document.querySelector('#orientation');
 
+    function showOrientation() {
+      orientationLabel.textContent = orientation.matches
+        ? 'portrait — 2 lines'
+        : 'landscape — 3 lines';
+    }
+
+    orientation.addEventListener('change', showOrientation);
+    showOrientation();
+
+    LegacyEllipsis({
+      className: '.legacy-clamp',
+      lines: 3,
+      portrait: 2
+    });
+
+    Ellipsis({
+      className: '.modern-clamp',
+      lines: 3,
+      portrait: 2
+    });
+  </script>
 </body>
-
 </html>

@@ -1,118 +1,88 @@
-THIS LIB IS UNMAINTAINED SINCE 2018, USE AT YOUR OWN RISK, IDEALLY DO NOT USE AT ALL.
-===================
+# Ellipsis.js
 
-Ellipsis.js
-===================
+A tiny JavaScript API around native CSS multiline `line-clamp` for modern
+browsers.
 
-Ellipsis.js is a Pure Javascript Library to add some ellipsis on some complex DOM elements such as multiline divs or elements with childs (links, spans, etc.).
-The library is fully responsive, works across all major browsers, and try to be highly configurable.
-It is also very light, with a size of ~4kb when minified.
+Version 1 uses the browser's layout engine. It does not measure text, rewrite
+HTML, remove child nodes, or listen for resize events.
 
-----------
+[Demo and v0 comparison](https://glinford.github.io/ellipsis.js/)
 
-Demo:
-----
+## CSS only
 
-https://glinford.github.io/ellipsis.js/
+For static content, you do not need this library:
 
-
-----------
-
-
-Installation:
--------------
-
- **Bower**
-
-    bower install ellipsis.js
-
- **NPM**
-
-    npm install ellipsis.js
-
- **Or…**
-
-    git clone https://github.com/glinford/ellipsis.js
-
-----------
-
-Usage:
--------------------
-
-    <script src="/your/path/ellipsis.min.js"></script>
-    <script type="text/javascript">
-      Ellipsis(); //default conf
-    </script>
-
-By default Ellipsis.js will work on DOM elements that have a 'clamp' class and will add ellipsis after 2 lines.
-
-----------
-Configuration properties:
--------------------
-
-    {
-      ellipsis: '…', //default ellipsis value
-	  debounce: 0, //if you want to chill out your memory usage on resizing
-	  responsive: true, //if you want the ellipsis to move with the window resizing
-	  className: '.clamp', //default class to apply the ellipsis
-	  lines: 2 //default number of lines when the ellipsis will appear
-	  portrait: null //default no change, put a number of lines if you want a different number of lines in portrait mode,
-	  break_word: true //default the ellipsis can truncate words
-    }
-
-Lists:
-- debounce | Number | Default: 0 | Value in Milliseconds. If set to 0, it will use `window.requestAnimationFrame` (or a polyfill for IE <= 9) to debounce the `resize` events.
-- responsive | Boolean | Default: true | True is you want the ellipsis to be responsive, false if not.
-- className | String | Default: '.clamp' | A class or valid query selector where you want your ellipsis to appear
-- lines | Number | Default: 2 | The maximum number of lines before ellipsis
-- portrait | Number | Default: null | If you want a different number from the lines property on portrait mode.
-- break_word | Boolean | Default: true | If true the words can be truncated by the ellipsis, eg: "Hello Wo…", if false they won't, eg "Hello …"
-
-
-----------
-"Manual" mode:
--------------------
-
-You can use the Ellipsis.js object to apply the configuration to additional DOM elements after it
-has been loaded:
-
-```javascript
-var ellipsis = Ellipsis();
-var elements = document.getElementsByClassName('.special-title');
-ellipsis.add(elements);
+```css
+.clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
 ```
 
-This can be done with a single element:
+The standardized `line-clamp` property is included for current and future
+implementations. The `-webkit-` declarations are the standardized compatibility
+form currently required by stable Chrome, Firefox, and Safari.
 
-```javascript
-ellipsis.add(elements[0]);
+## Install
+
+```sh
+npm install ellipsis.js
 ```
 
-If using Ellipsis.js manually, you can disable the selector option in the configuration like this:
-
-```javascript
-var ellipsisConf = {className: false};
-var ellipsis = Ellipsis(ellipsisConf);
+```html
+<script src="ellipsis.min.js"></script>
 ```
 
-Known Issues:
--------------------
+## JavaScript API
 
-By default the line-height property of a text is 'normal' which cannot be computed with getComputedStyle() method. If that occurs we will replace the line-height from normal to font-size + 2px which is the default value for most of browsers/OS.
+JavaScript remains useful when the selector or line count is runtime data, when
+portrait mode uses a different count, or when elements are added manually.
 
-The library does some heavy computation so it wont be suitable for pages that have like 100 elements with 100 lines each. I will work on optimization in future releases.
+```html
+<article class="clamp">Long content…</article>
 
-SVG text not supported.
+<script src="ellipsis.min.js"></script>
+<script>
+  const ellipsis = Ellipsis({
+    className: '.clamp',
+    lines: 2,
+    portrait: 1
+  });
 
-----------
+  ellipsis.add(document.querySelector('.another-element'));
 
-To Do / Contributions:
--------------------
+  // Stops the orientation listener and releases element references.
+  ellipsis.destroy();
+</script>
+```
 
-- Speed Improvement
-- SVG text support
-- Gradient instead of "String" Ellipsis
+### Options
 
-Feel free to branch and PR :)
+| Option | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `className` | string or `false` | `'.clamp'` | Selector applied on creation; use `false` for manual mode |
+| `lines` | positive integer | `2` | Maximum visible lines |
+| `portrait` | positive integer or `null` | `null` | Line count in portrait orientation |
 
-----------
+`add(element)` accepts one element, a `NodeList`, an `HTMLCollection`, or any
+iterable of elements. `destroy()` does not remove the applied inline styles.
+
+## Migrating from v0
+
+Version 1 is a drop-in replacement only for the retained `className`, `lines`,
+`portrait`, `add()`, and `destroy()` API. It is not a universal drop-in upgrade.
+
+The v0 options `ellipsis`, `debounce`, `responsive`, and `break_word` were
+removed because native layout makes them obsolete or cannot reproduce them
+consistently across current browsers. Version 1 also keeps the full content in
+the DOM instead of physically deleting text and child nodes.
+
+The old v0.1.4 source remains in `ellipsis.legacy.js` only for the side-by-side
+demo and is not included in the npm package.
+
+## License
+
+MIT
