@@ -70,6 +70,24 @@ portrait mode uses a different count, or when elements are added manually.
 `add(element)` accepts one element, a `NodeList`, an `HTMLCollection`, or any
 iterable of elements. `destroy()` does not remove the applied inline styles.
 
+## React
+
+React 18+ can use the optional callback-ref hook. It is SSR-safe and does not
+use an effect:
+
+```jsx
+import { useEllipsis } from 'ellipsis.js/react';
+
+function Summary({ children }) {
+  const clampRef = useEllipsis({ lines: 3, portrait: 2 });
+
+  return <p ref={clampRef}>{children}</p>;
+}
+```
+
+The React entry point is marked `use client` for React Server Components. React
+is an optional peer dependency, so vanilla JavaScript users do not install it.
+
 ## Migrating from v0
 
 Version 1 is a drop-in replacement only for the retained `className`, `lines`,
